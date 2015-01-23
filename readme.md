@@ -80,7 +80,7 @@ If you need to pass a special configuration array Elasticsearch, you can add tha
 ```php
 <?php
 
-return array(
+return [
 
     /*
     |--------------------------------------------------------------------------
@@ -111,7 +111,7 @@ return array(
 
     'default_index' => 'my_custom_index_name',
 
-);
+];
 
 ```
 
@@ -126,12 +126,12 @@ If you want a simple way to create indexes, Elasticquent models have a function 
 For mapping, you can set a `mappingProperties` property in your model and use some mapping functions from there:
 
 ```php
-protected $mappingProperties = array(
-   'title' => array(
+protected $mappingProperties = [
+   'title' => [
         'type' => 'string',
         'analyzer' => 'standard'
-    )
-);
+    ]
+];
 ```
 
 If you'd like to setup a model's type mapping based on your mapping properties, you can use:
@@ -158,7 +158,7 @@ Elastiquent will use `default` as your index name, but you can set a custom inde
 ```php
 <?php
 
-return array(
+return [
 
     /*
     |--------------------------------------------------------------------------
@@ -171,7 +171,7 @@ return array(
 
     'default_index' => 'my_custom_index_name',
 
-);
+];
 ```
 
 ### Setting a Custom Type Name
@@ -217,7 +217,13 @@ There are two ways to search in Elasticquent. The first is a simple term search 
 
 The second is a query based search for more complex searching needs:
 
-    $books = Book::searchByQuery(array('query' => array('match' => array('title' => 'Moby Dick'))));
+    $books = Book::searchByQuery([
+        'query' => [
+            'match' => [
+                'title' => 'Moby Dick'
+            ]
+        ]
+    ]);
 
 Both methods will return a search collection.
 
@@ -275,10 +281,10 @@ If you're dealing with raw search data from outside of Elasticquent, you can use
 ```php
 $client = new \Elasticsearch\Client();
 
-$params = array(
+$params = [
     'index' => 'default',
     'type'  => 'books'
-);
+];
 
 $params['body']['query']['match']['title'] = 'Moby Dick';
 
@@ -299,11 +305,11 @@ By default, Elasticquent will use the entire attribute array for your Elasticsea
 ```php
 function getIndexDocumentData()
 {
-    return array(
+    return [
         'id'      => $this->id,
         'title'   => $this->title,
         'custom'  => 'variable'
-    );
+    ];
 }
 ```
 Be careful with this, as Elasticquent reads the document source into the Eloquent model attributes when creating a search result collection, so make sure you are indexing enough data for your the model functionality you want to use.
