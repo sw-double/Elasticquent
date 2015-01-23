@@ -217,7 +217,7 @@ There are two ways to search in Elasticquent. The first is a simple term search 
 
 The second is a query based search for more complex searching needs:
 
-    $books = Book::searchByQuery(array('match' => array('title' => 'Moby Dick')));
+    $books = Book::searchByQuery(array('query' => array('match' => array('title' => 'Moby Dick'))));
 
 Both methods will return a search collection.
 
