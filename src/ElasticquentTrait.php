@@ -450,9 +450,16 @@ trait ElasticquentTrait
     {
         $instance = new static;
 
-        // If the mapping exists, let's delete it.
-        if ($instance->mappingExists()) {
-            $instance->deleteMapping();
+        try
+        {
+            // If the mapping exists, let's delete it.
+            if ($instance->mappingExists()) {
+                $instance->deleteMapping();
+            }
+        }
+        catch (Missing404Exception $e)
+        {
+            //
         }
 
         // Don't need ignore conflicts because if we
