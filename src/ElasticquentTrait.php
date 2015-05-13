@@ -443,10 +443,15 @@ trait ElasticquentTrait
      *
      * This will delete and then re-add
      * the mapping for this model.
+     * This well also create index
+     * if it does not exist already
+     *
+     * @param null $shards
+     * @param null $replicas
      *
      * @return array
      */
-    public static function rebuildMapping()
+    public static function rebuildMapping($shards = null, $replicas = null)
     {
         $instance = new static;
 
@@ -461,6 +466,8 @@ trait ElasticquentTrait
         {
             //
         }
+
+        static::createIndexIfNotExists($shards, $replicas);
 
         // Don't need ignore conflicts because if we
         // just removed the mapping there shouldn't
@@ -494,6 +501,33 @@ trait ElasticquentTrait
         }
 
         return $client->indices()->create($index);
+    }
+
+    /**
+     * Create Index if It Does Not Exist
+     *
+     * @param null $shards
+     * @param null $replicas
+     *
+     * @return array|null
+     */
+    public static function createIndexIfNotExists($shards = null, $replicas = null)
+    {
+        if ( ! static::indexExists()) {
+            return static::createIndex($shards, $replicas);
+        }
+    }
+
+    /**
+     * Index Exists
+     *
+     * @return bool
+     */
+    public static function indexExists()
+    {
+        $instance = new static;
+
+        return $instance->getElasticSearchClient()->indices()->exists(['index' => $instance->getIndexName()]);
     }
 
     /**
