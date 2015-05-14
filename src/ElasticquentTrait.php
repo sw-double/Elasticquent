@@ -3,6 +3,7 @@
 use \Elasticquent\ElasticquentCollection as ElasticquentCollection;
 use \Elasticquent\ElasticquentResultCollection as ResultCollection;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Elasticquent Trait
@@ -47,6 +48,39 @@ trait ElasticquentTrait
      * @var null|int
      */
     protected $documentVersion = null;
+
+    /**
+     * Keep your Elasticsearch documents
+     * in sync with your Eloquent database rows
+     *
+     * It listens to 'created', 'updated', and 'deleted'
+     * model events to keep documents up to date
+     *
+     * @var bool
+     */
+    protected static $syncToElasticsearch = true;
+
+    /**
+     * Bind event listeners for syncToElasticsearch
+     */
+    public static function bootElasticquentTrait()
+    {
+        static::saved(function(Model $model)
+        {
+            if ($model::$syncToElasticsearch)
+            {
+                $model->updateIndex();
+            }
+        }, -1);
+
+        static::deleted(function(Model $model)
+        {
+            if ($model::$syncToElasticsearch)
+            {
+                $model->removeFromIndex();
+            }
+        }, -1);
+    }
 
     /**
      * Get ElasticSearch Client
