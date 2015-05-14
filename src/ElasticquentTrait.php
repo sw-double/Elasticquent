@@ -302,6 +302,27 @@ trait ElasticquentTrait
     }
 
     /**
+     * Update Record in Index
+     *
+     * @param bool $upsert
+     *
+     * @return array
+     */
+    public function updateIndex($upsert = true)
+    {
+        $params = $this->getBasicEsParams();
+
+        array_set($params, 'body.doc', $this->getIndexDocumentData());
+
+        if ($upsert)
+        {
+            array_set($params, 'body.doc_as_upsert', true);
+        }
+
+        return $this->getElasticSearchClient()->update($params);
+    }
+
+    /**
      * Remove From Search Index
      *
      * @return array
