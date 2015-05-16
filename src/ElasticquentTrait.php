@@ -41,6 +41,13 @@ trait ElasticquentTrait
     protected $documentScore = null;
 
     /**
+     * Document Sort
+     *
+     * @var null|array
+     */
+    protected $documentSort = null;
+
+    /**
      * Document Version
      *
      * Elasticsearch document version.
@@ -209,6 +216,16 @@ trait ElasticquentTrait
     public function documentScore()
     {
         return $this->documentScore;
+    }
+
+    /**
+     * Get Document Sort
+     *
+     * @return null|array
+     */
+    public function documentSort()
+    {
+        return $this->documentSort;
     }
 
     /**
@@ -635,6 +652,11 @@ trait ElasticquentTrait
         // Set our document version if it's
         if (isset($hit['_version'])) {
             $instance->documentVersion = $hit['_version'];
+        }
+
+		// Set document sort if it's present
+        if (isset($hit['sort'])) {
+            $instance->documentSort = $hit['sort'];
         }
 
         return $instance;
